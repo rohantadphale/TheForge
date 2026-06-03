@@ -1,0 +1,10 @@
+.DS_Store
+.logs/
+__pycache__/
+*.py[cod]
+
+backend/.venv/
+backend/theforge.db
+
+frontend/node_modules/
+frontend/dist/
