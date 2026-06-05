@@ -2,10 +2,9 @@ import { useEffect, useMemo, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { getDashboard } from '../api/dashboard'
 import { completeQuest } from '../api/quests'
-import type { CompletionResponse, Quest } from '../api/types'
+import type { Quest } from '../api/types'
 import { AttributeGrid } from '../components/AttributeGrid'
 import { CompanionWidget } from '../components/CompanionWidget'
-import { CompletionToast } from '../components/CompletionToast'
 import { CurrencyBar } from '../components/CurrencyBar'
 import { DailyBriefing } from '../components/DailyBriefing'
 import { LoadingSkeleton } from '../components/LoadingSkeleton'
@@ -33,8 +32,9 @@ export function DashboardPage() {
   const setSettings = useAppStore((store) => store.setSettings)
   const setProfile = useAppStore((store) => store.setProfile)
   const setCompanionState = useAppStore((store) => store.setCompanionState)
+  const enqueueCompletionToast = useAppStore((store) => store.enqueueCompletionToast)
+  const showRankUp = useAppStore((store) => store.showRankUp)
   const [completedIds, setCompletedIds] = useState<Set<number>>(() => readCompletedIds())
-  const [toast, setToast] = useState<CompletionResponse | null>(null)
 
   const dashboardQuery = useQuery({
     queryKey: ['dashboard'],
@@ -55,10 +55,14 @@ export function DashboardPage() {
       next.add(quest.id)
       setCompletedIds(next)
       writeCompletedIds(next)
-      setToast(result)
+      enqueueCompletionToast(quest, result)
+      if (result.rank_changed) showRankUp(result.new_rank.label)
       setCompanionState('celebrating')
-      window.setTimeout(() => setToast(null), 4000)
-      window.setTimeout(() => setCompanionState('idle'), 3000)
+      console.info('Companion state changed to celebrating')
+      window.setTimeout(() => {
+        setCompanionState('idle')
+        console.info('Companion state changed to idle')
+      }, 3000)
       queryClient.invalidateQueries({ queryKey: ['dashboard'] })
       queryClient.invalidateQueries({ queryKey: ['quests'] })
     },
@@ -131,8 +135,6 @@ export function DashboardPage() {
       <Panel title="Attributes">
         <AttributeGrid attributes={data.attributes} />
       </Panel>
-
-      <CompletionToast completion={toast} />
     </div>
   )
 }

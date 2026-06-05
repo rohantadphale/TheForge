@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { getAttributes } from '../api/attributes'
-import { AttributeGrid } from '../components/AttributeGrid'
+import { AttributeMilestoneGrid } from '../components/AttributeMilestoneGrid'
 import { Panel } from '../components/Panel'
 
 export function AttributesPage() {
@@ -9,7 +9,7 @@ export function AttributesPage() {
   return (
     <Panel title="Attributes">
       {query.isLoading ? <p className="text-text-muted">Loading attributes...</p> : null}
-      {query.data ? <AttributeGrid attributes={query.data} /> : null}
+      {query.data ? <AttributeMilestoneGrid attributes={query.data} /> : null}
     </Panel>
   )
 }

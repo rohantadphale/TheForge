@@ -18,15 +18,20 @@ export function RankBadge({ currentRank, nextRank, totalXp, level }: RankBadgePr
         <span className="rounded border border-primary/60 bg-primary-dim/50 px-3 py-1 font-mono text-sm text-violet-100">
           {currentRank.label}
         </span>
-        <span className="font-mono text-3xl font-bold text-text-primary">Lv. {level}</span>
+        <span
+          key={level}
+          className="animate-[levelPulse_420ms_ease-out] font-mono text-3xl font-bold text-text-primary"
+        >
+          Lv. {level}
+        </span>
       </div>
       <div>
         <div className="h-3 overflow-hidden rounded-sm bg-bg-elevated">
-          <div className="h-full bg-primary" style={{ width: `${progress}%` }} />
+          <div className="h-full bg-primary transition-[width] duration-700 ease-out" style={{ width: `${progress}%` }} />
         </div>
         <div className="mt-2 flex justify-between font-mono text-xs text-text-muted">
           <span>{totalXp} XP</span>
-          <span>{nextRank ? `${nextRank.min_xp} XP` : 'Max rank'}</span>
+          <span>{nextRank ? `${nextRank.min_xp} XP` : 'MAX RANK'}</span>
         </div>
       </div>
     </div>
