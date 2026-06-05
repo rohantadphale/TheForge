@@ -14,6 +14,11 @@ import { RankBadge } from '../components/RankBadge'
 import { useAppStore } from '../stores/useAppStore'
 
 const completionKey = () => `completed:${new Date().toISOString().slice(0, 10)}`
+const briefingKey = 'axiom_last_briefed'
+
+function todayKey() {
+  return new Date().toISOString().slice(0, 10)
+}
 
 function readCompletedIds() {
   try {
@@ -34,6 +39,7 @@ export function DashboardPage() {
   const setCompanionState = useAppStore((store) => store.setCompanionState)
   const enqueueCompletionToast = useAppStore((store) => store.enqueueCompletionToast)
   const showRankUp = useAppStore((store) => store.showRankUp)
+  const companionState = useAppStore((store) => store.companionState)
   const [completedIds, setCompletedIds] = useState<Set<number>>(() => readCompletedIds())
 
   const dashboardQuery = useQuery({
@@ -47,6 +53,22 @@ export function DashboardPage() {
       setProfile(dashboardQuery.data.profile)
     }
   }, [dashboardQuery.data, setProfile, setSettings])
+
+  useEffect(() => {
+    if (!dashboardQuery.data) return undefined
+
+    const today = todayKey()
+    if (localStorage.getItem(briefingKey) === today) return undefined
+
+    localStorage.setItem(briefingKey, today)
+    setCompanionState('briefing')
+    console.info('Companion state changed to briefing')
+    const timer = window.setTimeout(() => {
+      setCompanionState('idle')
+      console.info('Companion state changed to idle')
+    }, 5000)
+    return () => window.clearTimeout(timer)
+  }, [dashboardQuery.data, setCompanionState])
 
   const completeMutation = useMutation({
     mutationFn: (quest: Quest) => completeQuest(quest.id, new Date().toISOString().slice(0, 10)),
@@ -125,7 +147,7 @@ export function DashboardPage() {
           )}
         </Panel>
         <Panel title="Companion">
-          <CompanionWidget companion={data.companion} />
+          <CompanionWidget companion={data.companion} companionState={companionState} />
         </Panel>
         <Panel>
           <DailyBriefing />
