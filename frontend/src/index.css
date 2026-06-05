@@ -49,3 +49,14 @@ select,
 textarea {
   font: inherit;
 }
+
+@keyframes levelPulse {
+  0% {
+    transform: translateY(6px);
+    opacity: 0.3;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
