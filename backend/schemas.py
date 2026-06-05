@@ -139,6 +139,7 @@ class QuestCompleteRequest(BaseModel):
 class AttributeChangeResponse(BaseModel):
     key: str
     name: str
+    points_gained: int
     new_score: int
 
 
