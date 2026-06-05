@@ -45,6 +45,10 @@ export type Campaign = {
   created_at: string
 }
 
+export type CampaignWithQuests = Campaign & {
+  quests: Quest[]
+}
+
 export type Quest = {
   id: number
   title: string
@@ -121,4 +125,24 @@ export type CompletionResponse = {
     points_gained: number
     new_score: number
   }>
+}
+
+export type WeeklyCompletion = {
+  id: number
+  quest_id: number
+  quest_title: string
+  completed_date: string
+  xp_awarded: number
+  gold_awarded: number
+}
+
+export type WeeklySummary = {
+  id: number | null
+  week_start: string
+  summary: string | null
+  xp_gained: number
+  gold_gained: number
+  quests_completed: number
+  created_at: string | null
+  completions: WeeklyCompletion[]
 }

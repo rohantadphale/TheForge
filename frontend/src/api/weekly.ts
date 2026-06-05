@@ -1,16 +1,14 @@
 import { apiClient } from './client'
+import type { WeeklySummary } from './types'
 
-export type WeeklyReview = {
-  id: number
-  week_start: string
-  summary: string | null
-  xp_gained: number
-  gold_gained: number
-  quests_completed: number
-  created_at: string
+export async function getWeeklySummary(weekStart: string) {
+  const { data } = await apiClient.get<WeeklySummary>('/weekly', {
+    params: { week_start: weekStart },
+  })
+  return data
 }
 
-export async function getWeeklyReviews() {
-  const { data } = await apiClient.get<WeeklyReview[]>('/weekly')
+export async function saveWeeklySummary(payload: { week_start: string; summary: string }) {
+  const { data } = await apiClient.post<WeeklySummary>('/weekly', payload)
   return data
 }

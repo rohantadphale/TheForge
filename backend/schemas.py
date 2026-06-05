@@ -199,6 +199,26 @@ class WeeklyReviewCreate(BaseModel):
     summary: str | None = None
 
 
+class WeeklyCompletion(BaseModel):
+    id: int
+    quest_id: int
+    quest_title: str
+    completed_date: str
+    xp_awarded: int
+    gold_awarded: int
+
+
+class WeeklySummary(BaseModel):
+    id: int | None = None
+    week_start: str
+    summary: str | None = None
+    xp_gained: int
+    gold_gained: int
+    quests_completed: int
+    created_at: str | None = None
+    completions: list[WeeklyCompletion]
+
+
 class DashboardResponse(BaseModel):
     profile: UserProfile
     current_rank: Rank

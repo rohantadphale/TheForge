@@ -66,6 +66,10 @@ def _seed_test_data(conn) -> None:
         ("Unawakened", 0, 0),
         ("E-Rank", 500, 1),
         ("D-Rank", 1500, 2),
+        ("C-Rank", 4000, 3),
+        ("B-Rank", 10000, 4),
+        ("A-Rank", 25000, 5),
+        ("S-Rank", 60000, 6),
     ]
     for label, min_xp, sort_order in ranks:
         conn.execute(

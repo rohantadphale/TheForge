@@ -2,7 +2,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { FormEvent } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { getAttributes } from '../api/attributes'
 import { getCampaigns } from '../api/campaigns'
 import { createQuest, getQuest, updateQuest } from '../api/quests'
@@ -49,7 +49,9 @@ export function QuestFormPage() {
   const questId = id ? Number(id) : null
   const isEdit = questId !== null
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const queryClient = useQueryClient()
+  const prefilledCampaignId = searchParams.get('campaign_id')
 
   const campaignsQuery = useQuery({ queryKey: ['campaigns'], queryFn: getCampaigns })
   const attributesQuery = useQuery({ queryKey: ['attributes'], queryFn: getAttributes })
@@ -77,6 +79,12 @@ export function QuestFormPage() {
       if (questType === 'weekly') setRecurrence('weekly')
     }
   }, [isEdit, questType])
+
+  useEffect(() => {
+    if (!isEdit && prefilledCampaignId) {
+      setCampaignId(prefilledCampaignId)
+    }
+  }, [isEdit, prefilledCampaignId])
 
   useEffect(() => {
     if (attributesQuery.data && Object.keys(attributeRewards).length === 0) {
